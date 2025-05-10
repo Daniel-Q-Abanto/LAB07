@@ -1,12 +1,13 @@
 ﻿<Window x:Class="LAB07.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Gestión de Productos" Height="500" Width="900">
+        Title="Gestión de Productos" Height="600" Width="900">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Buscar -->
@@ -26,7 +27,16 @@
             <Button Content="Eliminar" Width="80" Click="Eliminar_Click"/>
         </StackPanel>
 
-        <!-- Tabla -->
+        <!-- Tabla activos -->
         <DataGrid x:Name="dgProductos" Grid.Row="2" AutoGenerateColumns="True" SelectionChanged="dgProductos_SelectionChanged"/>
+
+        <!-- Expander desactivados -->
+        <Expander Header="Productos Desactivados" Grid.Row="3" Margin="0,10,0,0" IsExpanded="False">
+            <StackPanel>
+                <Button Content="Cargar Desactivados" Width="160" Margin="0,0,0,10" Click="CargarDesactivados_Click"/>
+                <DataGrid x:Name="dgDesactivados" AutoGenerateColumns="True" Height="150" SelectionChanged="dgDesactivados_SelectionChanged"/>
+                <Button Content="Reactivar Producto" Width="160" Margin="0,10,0,0" Click="Reactivar_Click"/>
+            </StackPanel>
+        </Expander>
     </Grid>
 </Window>

@@ -9,6 +9,7 @@ namespace LAB07
     {
         private readonly ProductBO logica = new();
         private Product? productoSeleccionado;
+        private Product? productoDesactivado;
 
         public MainWindow()
         {
@@ -32,10 +33,7 @@ namespace LAB07
                 Active = chkActivo.IsChecked == true
             };
 
-            var mensaje = logica.AgregarProducto(nuevo)
-                ? "Producto agregado" : "Error al agregar";
-
-            MessageBox.Show(mensaje);
+            MessageBox.Show(logica.AgregarProducto(nuevo) ? "Producto agregado" : "Error al agregar");
             Limpiar();
         }
 
@@ -48,10 +46,7 @@ namespace LAB07
             productoSeleccionado.Stock = int.Parse(txtStock.Text);
             productoSeleccionado.Active = chkActivo.IsChecked == true;
 
-            var mensaje = logica.EditarProducto(productoSeleccionado)
-                ? "Producto actualizado" : "Error al actualizar";
-
-            MessageBox.Show(mensaje);
+            MessageBox.Show(logica.EditarProducto(productoSeleccionado) ? "Producto actualizado" : "Error al actualizar");
             Limpiar();
         }
 
@@ -59,10 +54,7 @@ namespace LAB07
         {
             if (productoSeleccionado == null) return;
 
-            var mensaje = logica.EliminarProducto(productoSeleccionado.ProductId)
-                ? "Producto desactivado" : "Error al desactivar";
-
-            MessageBox.Show(mensaje);
+            MessageBox.Show(logica.EliminarProducto(productoSeleccionado.ProductId) ? "Producto desactivado" : "Error al desactivar");
             Limpiar();
         }
 
@@ -82,7 +74,23 @@ namespace LAB07
             txtNombre.Text = txtPrecio.Text = txtStock.Text = "";
             chkActivo.IsChecked = true;
             productoSeleccionado = null;
+            productoDesactivado = null;
             Refrescar();
+            CargarDesactivados_Click(null!, null!);
+        }
+
+        private void CargarDesactivados_Click(object sender, RoutedEventArgs e) =>
+            dgDesactivados.ItemsSource = logica.ObtenerDesactivados();
+
+        private void dgDesactivados_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+            productoDesactivado = dgDesactivados.SelectedItem as Product;
+
+        private void Reactivar_Click(object sender, RoutedEventArgs e)
+        {
+            if (productoDesactivado == null) return;
+
+            MessageBox.Show(logica.ReactivarProducto(productoDesactivado.ProductId) ? "Producto reactivado" : "Error al reactivar");
+            Limpiar();
         }
     }
 }

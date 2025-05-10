@@ -11,9 +11,20 @@ namespace LAB07.Negocio
 
         public List<Product> ObtenerProductos(string nombre) =>
             dao.ListarProductos()
-               .Where(p => p.Active) 
+               .Where(p => p.Active)
                .Where(p => p.Name.ToLower().Contains(nombre.ToLower().Trim()))
                .ToList();
+
+        public List<Product> ObtenerDesactivados() =>
+            dao.ListarProductos().Where(p => !p.Active).ToList();
+
+        public bool ReactivarProducto(int id)
+        {
+            var p = dao.ListarProductos().FirstOrDefault(x => x.ProductId == id);
+            if (p == null) return false;
+            p.Active = true;
+            return dao.ActualizarProducto(p);
+        }
 
         public bool AgregarProducto(Product p) => dao.InsertarProducto(p);
 
