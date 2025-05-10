@@ -1,36 +1,88 @@
-﻿using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LAB07.Negocio;
-using System.Collections.Generic;
-using System.Linq;
 using LAB07.Entidad;
+using LAB07.Negocio;
 
 namespace LAB07
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private ProductBO logica = new ProductBO();
+        private readonly ProductBO logica = new();
+        private Product? productoSeleccionado;
 
         public MainWindow()
         {
             InitializeComponent();
+            Refrescar();
         }
 
-        private void Buscar_Click(object sender, RoutedEventArgs e)
+        private void Refrescar() =>
+            dgProductos.ItemsSource = logica.ObtenerProductos("");
+
+        private void Buscar_Click(object sender, RoutedEventArgs e) =>
+            dgProductos.ItemsSource = logica.ObtenerProductos(txtBuscar.Text.Trim());
+
+        private void Agregar_Click(object sender, RoutedEventArgs e)
         {
-            string nombre = txtBuscar.Text.Trim();
-            dgProductos.ItemsSource = logica.ObtenerProductos(nombre);
+            var nuevo = new Product
+            {
+                Name = txtNombre.Text.Trim(),
+                Price = decimal.Parse(txtPrecio.Text),
+                Stock = int.Parse(txtStock.Text),
+                Active = chkActivo.IsChecked == true
+            };
+
+            var mensaje = logica.AgregarProducto(nuevo)
+                ? "Producto agregado" : "Error al agregar";
+
+            MessageBox.Show(mensaje);
+            Limpiar();
+        }
+
+        private void Actualizar_Click(object sender, RoutedEventArgs e)
+        {
+            if (productoSeleccionado == null) return;
+
+            productoSeleccionado.Name = txtNombre.Text.Trim();
+            productoSeleccionado.Price = decimal.Parse(txtPrecio.Text);
+            productoSeleccionado.Stock = int.Parse(txtStock.Text);
+            productoSeleccionado.Active = chkActivo.IsChecked == true;
+
+            var mensaje = logica.EditarProducto(productoSeleccionado)
+                ? "Producto actualizado" : "Error al actualizar";
+
+            MessageBox.Show(mensaje);
+            Limpiar();
+        }
+
+        private void Eliminar_Click(object sender, RoutedEventArgs e)
+        {
+            if (productoSeleccionado == null) return;
+
+            var mensaje = logica.EliminarProducto(productoSeleccionado.ProductId)
+                ? "Producto desactivado" : "Error al desactivar";
+
+            MessageBox.Show(mensaje);
+            Limpiar();
+        }
+
+        private void dgProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            productoSeleccionado = dgProductos.SelectedItem as Product;
+            if (productoSeleccionado == null) return;
+
+            txtNombre.Text = productoSeleccionado.Name;
+            txtPrecio.Text = productoSeleccionado.Price.ToString();
+            txtStock.Text = productoSeleccionado.Stock.ToString();
+            chkActivo.IsChecked = productoSeleccionado.Active;
+        }
+
+        private void Limpiar()
+        {
+            txtNombre.Text = txtPrecio.Text = txtStock.Text = "";
+            chkActivo.IsChecked = true;
+            productoSeleccionado = null;
+            Refrescar();
         }
     }
 }

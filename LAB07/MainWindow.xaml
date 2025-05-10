@@ -1,22 +1,32 @@
 ﻿<Window x:Class="LAB07.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LAB07"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Gestión de Productos" Height="500" Width="900">
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Buscar -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBox x:Name="txtBuscar" Width="200" Margin="0,0,10,0"/>
             <Button Content="Buscar" Width="100" Click="Buscar_Click"/>
         </StackPanel>
 
-        <DataGrid x:Name="dgProductos" Grid.Row="1" AutoGenerateColumns="True"/>
+        <!-- Formulario -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
+            <TextBox x:Name="txtNombre" Width="150" Margin="0,0,10,0" ToolTip="Nombre"/>
+            <TextBox x:Name="txtPrecio" Width="100" Margin="0,0,10,0" ToolTip="Precio"/>
+            <TextBox x:Name="txtStock" Width="100" Margin="0,0,10,0" ToolTip="Stock"/>
+            <CheckBox x:Name="chkActivo" Content="Activo" Margin="0,0,10,0"/>
+            <Button Content="Agregar" Width="80" Click="Agregar_Click" Margin="0,0,10,0"/>
+            <Button Content="Actualizar" Width="80" Click="Actualizar_Click" Margin="0,0,10,0"/>
+            <Button Content="Eliminar" Width="80" Click="Eliminar_Click"/>
+        </StackPanel>
+
+        <!-- Tabla -->
+        <DataGrid x:Name="dgProductos" Grid.Row="2" AutoGenerateColumns="True" SelectionChanged="dgProductos_SelectionChanged"/>
     </Grid>
 </Window>
